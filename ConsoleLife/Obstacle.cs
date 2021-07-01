@@ -10,9 +10,11 @@ namespace ConsoleLife
     {
         public static string DefaultObstacleImg { get { return "#"; } }
 
-        public Obstacle()
-        {
+        public Coordinate coordinate { get; set; }
 
+        public Obstacle(Coordinate coordinate)
+        {
+            this.coordinate = coordinate;
         }
     }
 }

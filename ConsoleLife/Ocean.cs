@@ -58,7 +58,17 @@ namespace ConsoleLife
 
         public void AddObstacles()
         {
+            Coordinate coord = new Coordinate();
+            for (int i = 0; i < ObstaclesCount; i++)
+            {
+                coord = GetEmptyCellCoord();
+                Field[coord.Y, coord.X].kind = Kind.Obstacles;
+                Field[coord.Y, coord.X].Img = Obstacle.DefaultObstacleImg;
+                Field[coord.Y, coord.X].coordinate = coord;
+                Obstacle obs = new Obstacle(coord);
+                listOfObstacles.Add(obs);
 
+            }
         }
 
         public void AddPrey()
@@ -68,6 +78,8 @@ namespace ConsoleLife
             {
                 coord = GetEmptyCellCoord();
                 Field[coord.Y, coord.X].kind = Kind.Prey;
+                Field[coord.Y, coord.X].Img = Prey.DefaultPreyImg;
+                Field[coord.Y, coord.X].coordinate = coord;
                 Prey prey = new Prey(coord);
                 listOfPreys.Add(prey);
 
@@ -81,6 +93,8 @@ namespace ConsoleLife
             {
                 coord = GetEmptyCellCoord();
                 Field[coord.Y, coord.X].kind = Kind.Predator;
+                Field[coord.Y, coord.X].Img = Predator.DefaultPredatorImg;
+                Field[coord.Y, coord.X].coordinate = coord;
                 Predator predator = new Predator(coord);
                 listOfPredators.Add(predator);
 
@@ -92,14 +106,14 @@ namespace ConsoleLife
         {
             Random rand = new Random();
             Coordinate empty = new Coordinate();
-            int x;
-            int y;
+            //int x;
+            //int y;
             do
             {
-                x = rand.Next(0, Columns - 1);
-                y = rand.Next(0, Rows - 1);
-            } while (Field[y ,x].Img != "-");
-            empty = Field[y, x].coordinate;
+                empty.X = rand.Next(0, Columns - 1);
+                empty.Y = rand.Next(0, Rows - 1);
+            } while (Field[empty.Y ,empty.X].Img != "-");
+            empty = Field[empty.Y, empty.X].coordinate;
             return empty;
            
         }
@@ -110,23 +124,23 @@ namespace ConsoleLife
             {
                 for (int j = 0; j < Columns; j++)
                 {
-                    switch (Field[i, j].kind)
-                    {
-                        case Kind.Empty:
-                            Field[i, j].Img = "-";
-                            break;
-                        case Kind.Prey:
-                            Field[i, j].Img = Prey.DefaultPreyImg;
-                            break;
-                        case Kind.Predator:
-                            Field[i, j].Img = Predator.DefaultPredatorImg;
-                            break;
-                        case Kind.Obstacles:
-                            Field[i, j].Img = Obstacle.DefaultObstacleImg;
-                            break;
-                        default:
-                            break;
-                    }
+                    //switch (Field[i, j].kind)
+                    //{
+                    //    case Kind.Empty:
+                    //        Field[i, j].Img = "-";
+                    //        break;
+                    //    case Kind.Prey:
+                    //        Field[i, j].Img = Prey.DefaultPreyImg;
+                    //        break;
+                    //    case Kind.Predator:
+                    //        Field[i, j].Img = Predator.DefaultPredatorImg;
+                    //        break;
+                    //    case Kind.Obstacles:
+                    //        Field[i, j].Img = Obstacle.DefaultObstacleImg;
+                    //        break;
+                    //    default:
+                    //        break;
+                    //}
                     
                     Console.Write(Field[i, j].Img);
                 }
