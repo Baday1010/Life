@@ -8,9 +8,10 @@ namespace ConsoleLife
 {
     public class Prey
     {
+        public Coordinate coordinate { get; set; }
         public int TimeToReproduce { get; set; } = 6;
 
-        public string DefaultPreyImg { get { return "f"; } }
+        public static string DefaultPreyImg { get { return "f"; } }
 
         public void Process()
         {
@@ -27,9 +28,10 @@ namespace ConsoleLife
 
         }
 
-        public Prey()
+        public Prey(Coordinate coordinate)
         {
-
+            this.coordinate = coordinate;
+            //Cell cell = new Cell(Kind.Prey, coordinate);
         }
 
     }

@@ -36,10 +36,13 @@ namespace ConsoleLife
                         string r = Console.ReadLine();
                         Console.WriteLine("Введите кол-во столбцов: ");
                         string c = Console.ReadLine();
+                        Console.WriteLine("Введите кол-во итераций: ");
+                        string i = Console.ReadLine();
                         try
                         {
                             int res = Convert.ToInt32(r);
                             int res2 = Convert.ToInt32(c);
+                            int res3 = Convert.ToInt32(c);
                         }
                         catch (OverflowException)
                         {
@@ -49,7 +52,7 @@ namespace ConsoleLife
                         {
                             Console.WriteLine($"The value {r} or {c} is not in a recognizable format.");
                         }
-                        ocean = new Ocean(Int32.Parse(r), Int32.Parse(c));
+                        ocean = new Ocean(Int32.Parse(r), Int32.Parse(c), Int32.Parse(i));
                         Console.Clear();
                         break;
                     default:
@@ -59,7 +62,7 @@ namespace ConsoleLife
                 Console.Clear();
                 Console.WriteLine(ocean.Rows);
                 
-                ocean.DisplayBorder();
+                //ocean.DisplayBorder();
                 ocean.Initialize();
                
                 Console.WriteLine(ocean.Field[5,3].coordinate.X);

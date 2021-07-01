@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleLife
 {
-    class Ocean
+    class Ocean 
     {
         public int Rows { get; set; } = 25;
 
@@ -20,10 +20,19 @@ namespace ConsoleLife
 
         public int ObstaclesCount { get; set; } = 75;
 
+        public int IterationCount { get; set; } = 1000;
+
         public int MaxCount { get { return 400; }}
 
+
+        public List<Prey> listOfPreys = new List<Prey>();
+
+        public List<Predator> listOfPredators = new List<Predator>();
+
+        public List<Obstacle> listOfObstacles = new List<Obstacle>();
+
         public Cell[,] Field;
-        private readonly Kind kind;
+        //private readonly Kind kind;
 
         /*
         public void GetNumPrey()
@@ -54,21 +63,32 @@ namespace ConsoleLife
 
         public void AddPrey()
         {
-            Coordinate empty = new Coordinate();
+            Coordinate coord = new Coordinate();
             for (int i = 0; i < PreyCount; i++)
             {
-                empty = GetEmptyCellCoord();
-                Field[empty.Y, empty.X].kind = Kind.Prey;
+                coord = GetEmptyCellCoord();
+                Field[coord.Y, coord.X].kind = Kind.Prey;
+                Prey prey = new Prey(coord);
+                listOfPreys.Add(prey);
+
             }
         }
 
         public void AddPredator()
         {
-            Random rand = new Random();
-            
+            Coordinate coord = new Coordinate();
+            for (int i = 0; i < PredatorsCount; i++)
+            {
+                coord = GetEmptyCellCoord();
+                Field[coord.Y, coord.X].kind = Kind.Predator;
+                Predator predator = new Predator(coord);
+                listOfPredators.Add(predator);
+
+            }
+
         }
 
-        public Coordinate GetEmptyCellCoord()
+        private Coordinate GetEmptyCellCoord()
         {
             Random rand = new Random();
             Coordinate empty = new Coordinate();
@@ -86,39 +106,71 @@ namespace ConsoleLife
 
         public void DisplayCells()
         {
-
-        }
-
-        public void DisplayBorder()
-        {
             for (int i = 0; i < Rows; i++)
             {
                 for (int j = 0; j < Columns; j++)
                 {
-                    if(i == 0 || i == Rows - 1 || j == 0 || j == Columns - 1)
+                    switch (Field[i, j].kind)
                     {
-                        Console.Write("#");
-                        //Field[i, j].Img = "#";
-                        //Field[i, j].kind = Kind.Obstacles;
+                        case Kind.Empty:
+                            Field[i, j].Img = "-";
+                            break;
+                        case Kind.Prey:
+                            Field[i, j].Img = Prey.DefaultPreyImg;
+                            break;
+                        case Kind.Predator:
+                            Field[i, j].Img = Predator.DefaultPredatorImg;
+                            break;
+                        case Kind.Obstacles:
+                            Field[i, j].Img = Obstacle.DefaultObstacleImg;
+                            break;
+                        default:
+                            break;
                     }
-                    else
-                    {
-                        Console.Write("-");
-                    }
-
+                    
+                    Console.Write(Field[i, j].Img);
                 }
                 Console.WriteLine();
-
             }
+            
         }
+
+        public void DisplayBorder()
+        {
+            for (int i = 0; i < Columns; i++)
+            {
+                Console.Write("=");
+            }
+            Console.WriteLine();
+        }
+
         public void DisplayStats()
         {
 
         }
       
-        public void Run(int Iteration)
+        public void Run()
         {
+            if (IterationCount > 1000)
+                IterationCount = 1000;
 
+            for (int iter = 0; iter < IterationCount; iter++)
+            {
+                if (PreyCount > 0 && PredatorsCount > 0)
+                {
+                    for (int i = 0; i < Rows; i++)
+                    {
+                        for (int j = 0; j < Columns; j++)
+                        {
+                            Field[i, j].Process();
+                            DisplayStats();
+                            DisplayCells();
+                            DisplayBorder();
+                            
+                        }
+                    }
+                }
+            }
         }
         /// <summary>
         /// Устанавливает кол-во добычи, хищников и преград
@@ -136,6 +188,7 @@ namespace ConsoleLife
             AddPrey();
             AddObstacles();
             DisplayStats();
+            DisplayBorder();
             DisplayCells();
         }
         /// <summary>
@@ -145,6 +198,7 @@ namespace ConsoleLife
         {
             Field = new Cell[Rows, Columns];
             Kind empty = Kind.Empty;
+            
             for (int i = 0; i < Rows; i++)
             {
                 for (int j = 0; j < Columns; j++)
@@ -153,17 +207,17 @@ namespace ConsoleLife
                     Field[i, j] = new Cell(empty, coordinate);
                 }
             }
+            
         }
         /// <summary>
         /// Инициализация Ocean со своими параметрами
         /// </summary>
         /// <param name="Rows">Кол-во строк</param>
         /// <param name="Columns">Кол-во рядков</param>
-        public Ocean(int Rows, int Columns)
+        public Ocean(int Rows, int Columns, int IterationCount)
         {
             this.Rows = Rows;
             this.Columns = Columns;
-            Field = new Cell[Rows, Columns];
             Kind empty = Kind.Empty;
             for (int i = 0; i < Rows; i++)
             {

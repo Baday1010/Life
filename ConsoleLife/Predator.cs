@@ -8,11 +8,13 @@ namespace ConsoleLife
 {
     public class Predator
     {
+        public Coordinate coordinate { get; set; }
+
         public int TimeToReproduce { get; set; } = 6;
 
         public int TimeToFeed { get; set; } = 6;
 
-        public string DefaultPredatorImg { get { return "S"; } }
+        public static string DefaultPredatorImg { get { return "S"; } }
 
         public void GetPreyNeighborCoord()
         {
@@ -34,9 +36,9 @@ namespace ConsoleLife
 
         }
 
-        public Predator()
+        public Predator(Coordinate coordinate)
         {
-
+            this.coordinate = coordinate;
         }
     }
 }

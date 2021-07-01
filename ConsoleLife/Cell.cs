@@ -20,14 +20,12 @@ namespace ConsoleLife
         }
     }
 
-    public enum Kind { Prey = 1, Predator, Obstacles, Empty };
+    public enum Kind {Empty = 1, Prey, Predator, Obstacles};
 
     class Cell
     {
 
         public Kind? kind = null;
-
-        public Ocean ocean1;
 
         public string Img { get; set; } = "-";
 
@@ -38,40 +36,72 @@ namespace ConsoleLife
 
         }
 
-        public void Display()
-        {
-
-        }
 
         public void Process()
         {
 
         }
 
-        public void GetEmptyNeighborCoord()
+        public Cell GetNeighborWithKind(Kind? kind)
         {
+            Cell neighbors = new Cell(kind);
 
+            int step = 0;
+
+            if (North())
+                return neighbors;
+
+            if (South())
+                return neighbors;
+
+            if (East())
+                return neighbors;
+
+            if (West())
+            {
+                return neighbors;
+            }
+            else
+            {
+                return neighbors;
+            }
+                
         }
-
+        /// <summary>
+        /// Ищет пустую соседнюю ячейку
+        /// </summary>
+        public Cell GetEmptyNeighborCoord()
+        {
+            GetOffset();
+            return GetNeighborWithKind(kind);
+        }
+        /// <summary>
+        /// Ищет соседнюю ячейку с добычей
+        /// </summary>
         public void GetPreyNeighborCoord()
         {
 
         }
+        /// <summary>
+        /// Возвращает смещение
+        /// </summary>
+        public void GetOffset()
+        {
 
-        public void GetCoordinate()
+        }
+        /// <summary>
+        /// Устанавливает смещение в newCoordinate
+        /// </summary>
+        /// <param name="coordinate">Координаты смещения</param>
+        public void SetOffset(Coordinate newCoordinate)
         {
 
         }
 
-        public void SetCoordinate(Coordinate coordinate)
-        {
-
-        }
-
-        public void GetCellAt(Coordinate coordinate)
-        {
-
-        }
+        //public Cell GetCellAt(Coordinate coordinate)
+        //{
+        //    return Field[coordinate.Y, coordinate.X];
+        //}
 
 
         /// <summary>
@@ -79,37 +109,44 @@ namespace ConsoleLife
         /// </summary>
         /// <param name="coordinate">Координаты ячейки</param>
         /// <param name="cell">Ячейка</param>
-        public void AssignCellAt(Coordinate coordinate, Cell cell)
-        {
-
-        }
+        //public void AssignCellAt(Coordinate coordinate, Cell cell)
+        //{
+        //    Field[coordinate.Y, coordinate.X] = cell;
+        //}
 
         public void DyingObject()
         {
 
         }
 
-        public void North()
+        public bool North()
         {
+            int value;
+            
 
+            return true;
         }
 
-        public void South()
+        public bool South()
         {
-
+            return true;
         }
 
-        public void West()
+        public bool West()
         {
-
+            return true;
         }
 
-        public void East()
+        public bool East()
         {
-
+            return true;
         }
 
 
+        public Cell(Kind? kind)
+        {
+            this.kind = kind;
+        }
 
         public Cell(Kind kind, Coordinate coordinate)
         {

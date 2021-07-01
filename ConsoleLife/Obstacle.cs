@@ -8,7 +8,7 @@ namespace ConsoleLife
 {
     public class Obstacle
     {
-        public string DefaultObstacleImg { get { return "#"; } }
+        public static string DefaultObstacleImg { get { return "#"; } }
 
         public Obstacle()
         {
