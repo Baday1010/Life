@@ -42,7 +42,7 @@ namespace ConsoleLife
 
         }
 
-        public Cell GetNeighborWithKind(Kind? kind)
+        public Cell GetNeighborWithImg(string img)
         {
             Cell neighbors = new Cell(kind);
 
@@ -70,10 +70,9 @@ namespace ConsoleLife
         /// <summary>
         /// Ищет пустую соседнюю ячейку
         /// </summary>
-        public Cell GetEmptyNeighborCoord()
+        public Coordinate GetEmptyNeighborCoord()
         {
-            GetOffset();
-            return GetNeighborWithKind(kind);
+            return GetNeighborWithImg(Img).coordinate;
         }
         /// <summary>
         /// Ищет соседнюю ячейку с добычей
