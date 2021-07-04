@@ -20,9 +20,9 @@ namespace ConsoleLife
         }
     }
 
-    public enum Kind {Empty = 1, Prey, Predator, Obstacles};
+    public enum Kind { Empty = 1, Prey, Predator, Obstacles };
 
-    class Cell
+    class Cell : Ocean
     {
 
         public Kind? kind = null;
@@ -31,55 +31,77 @@ namespace ConsoleLife
 
         public Coordinate coordinate;
 
-        public void GetImage()
-        {
-
-        }
-
 
         public void Process()
         {
-
+            Coordinate toCoord = new Coordinate();
+            toCoord = GetEmptyNeighborCoord();
         }
 
-        public Cell GetNeighborWithImg(string img)
+        public Cell GetNeighborWithKind(Kind? kind)
         {
-            Cell neighbors = new Cell(kind);
+            string img = "";
+            switch (kind)
+            {
+                case Kind.Empty:
+                    img = "-";
+                    break;
+                case Kind.Prey:
+                    img = "f";
+                    break;
+                case Kind.Predator:
+                    img = "S";
+                    break;
+                case Kind.Obstacles:
+                    img = "#";
+                    break;
+                default:
+                    break;
+            }
+            Cell[] neighbors = new Cell[4];
+            //Coordinate c = new Coordinate();
 
             int step = 0;
 
-            if (North())
-                return neighbors;
+            if (North().Img == img)
+                neighbors[step++] = North();
 
-            if (South())
-                return neighbors;
+            if (South().Img == img)
+                neighbors[step++] = South();
 
-            if (East())
-                return neighbors;
+            if (East().Img == img)
+                neighbors[step++] = East();
 
-            if (West())
+            if (West().Img == img)
+                neighbors[step++] = West();
+            if (step == 0)
             {
-                return neighbors;
+                return this;
             }
             else
             {
-                return neighbors;
+                Random rand = new Random();
+                int nextIntBetween = rand.Next(0, step - 1);
+                return neighbors[nextIntBetween];
             }
-                
+
         }
         /// <summary>
         /// Ищет пустую соседнюю ячейку
         /// </summary>
         public Coordinate GetEmptyNeighborCoord()
         {
-            return GetNeighborWithImg(Img).coordinate;
+            //GetOffset();
+            //Cell cell = new Cell();
+            //cell = GetNeighborWithImg(Img);
+            return GetNeighborWithKind(Kind.Empty).coordinate;
         }
         /// <summary>
         /// Ищет соседнюю ячейку с добычей
         /// </summary>
-        public void GetPreyNeighborCoord()
+        public Coordinate GetPreyNeighborCoord()
         {
-
+            return GetNeighborWithKind(Kind.Prey).coordinate;
         }
         /// <summary>
         /// Возвращает смещение
@@ -118,30 +140,43 @@ namespace ConsoleLife
 
         }
 
-        public bool North()
+        public Cell North()
         {
-            int value;
-            
-
-            return true;
+            int y;
+            //Cell[,] cells = new Cell[25, 70];
+            y = (coordinate.Y > 0) ? (coordinate.Y - 1) : (coordinate.Y);
+            return Field[y, coordinate.X];
         }
 
-        public bool South()
+        public Cell South()
         {
-            return true;
+            //Cell[,] cells = new Cell[25, 70];
+            int y;
+            y = (coordinate.Y + 1) % Rows;
+            return Field[y, coordinate.X];
         }
 
-        public bool West()
+        public Cell West()
         {
-            return true;
+            //Cell[,] cells = new Cell[25, 70];
+            int x;
+            x = (coordinate.X > 0) ? (coordinate.X - 1) : (coordinate.X);
+            return Field[coordinate.Y, x];
         }
 
-        public bool East()
+        public Cell East()
         {
-            return true;
+            //Cell[,] cells = new Cell[25, 70];
+            int x;
+            x = (coordinate.X + 1) % Columns;
+            return Field[coordinate.Y, x];
+
         }
 
+        public Cell()
+        {
 
+        }
         public Cell(Kind? kind)
         {
             this.kind = kind;
@@ -152,7 +187,7 @@ namespace ConsoleLife
             this.kind = kind;
             this.coordinate = coordinate;
         }
-       
+
 
     }
 }

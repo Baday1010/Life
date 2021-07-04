@@ -62,10 +62,7 @@ namespace ConsoleLife
                 Console.Clear();
                 Console.WriteLine(ocean.Rows);
                 
-                //ocean.DisplayBorder();
                 ocean.Initialize();
-               
-                //Console.WriteLine(ocean.Field[5,3].coordinate.X);
 
             }
            
