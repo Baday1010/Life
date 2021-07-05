@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace ConsoleLife
 {
-    public class Prey
+    public class Prey : Cell
     {
+#pragma warning disable 0108
         public Coordinate coordinate { get; set; }
         public int TimeToReproduce { get; set; } = 6;
 
@@ -18,14 +19,33 @@ namespace ConsoleLife
 
         }
 
-        public void MoveFrom(int from, int to)
+        public void MoveFrom(Coordinate from, Coordinate to)
         {
+            Cell toCell = new Cell(Kind.Prey);
+            --TimeToReproduce;
+            if (to.X != from.X && to.Y != from.Y)
+            {
+                toCell = GetCellAt(to);
+                SetOffset(to);
+                AssignCellAt(to, this);
 
+                if (TimeToReproduce <= 0)
+                {
+                    TimeToReproduce = TimeToReproduce;
+                    AssignCellAt(from, Reproduce(from));
+                }
+                else
+                {
+                    AssignCellAt(from, new Cell(Kind.Prey, from));
+                }
+            }
         }
 
-        public void Reproduce(Coordinate coordinate)
+        public override Cell Reproduce(Coordinate coordinate)
         {
-
+            Prey tmp = new Prey(coordinate);
+            ocean1.SetNumPrey(ocean1.listOfPreys.Count + 1);
+            return tmp;
         }
 
         public Prey(Coordinate coordinate)

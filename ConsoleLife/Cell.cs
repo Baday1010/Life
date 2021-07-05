@@ -22,7 +22,7 @@ namespace ConsoleLife
 
     public enum Kind { Empty = 1, Prey, Predator, Obstacles };
 
-    class Cell : Ocean
+    public class Cell
     {
 
         public Kind? kind = null;
@@ -31,8 +31,10 @@ namespace ConsoleLife
 
         public Coordinate coordinate;
 
+        public Ocean ocean1;
 
-        public void Process()
+
+        public virtual void Process()
         {
             Coordinate toCoord = new Coordinate();
             toCoord = GetEmptyNeighborCoord();
@@ -119,10 +121,15 @@ namespace ConsoleLife
 
         }
 
-        //public Cell GetCellAt(Coordinate coordinate)
-        //{
-        //    return Field[coordinate.Y, coordinate.X];
-        //}
+        /// <summary>
+        /// Метод поиска соседей
+        /// </summary>
+        /// <param name="coordinate"></param>
+        /// <returns></returns>
+        public Cell GetCellAt(Coordinate coordinate)
+        {
+            return ocean1.Field[coordinate.Y, coordinate.X];
+        }
 
 
         /// <summary>
@@ -130,10 +137,10 @@ namespace ConsoleLife
         /// </summary>
         /// <param name="coordinate">Координаты ячейки</param>
         /// <param name="cell">Ячейка</param>
-        //public void AssignCellAt(Coordinate coordinate, Cell cell)
-        //{
-        //    Field[coordinate.Y, coordinate.X] = cell;
-        //}
+        public void AssignCellAt(Coordinate coordinate, Cell cell)
+        {
+            ocean1.Field[coordinate.Y, coordinate.X] = cell;
+        }
 
         public void DyingObject()
         {
@@ -145,15 +152,16 @@ namespace ConsoleLife
             int y;
             //Cell[,] cells = new Cell[25, 70];
             y = (coordinate.Y > 0) ? (coordinate.Y - 1) : (coordinate.Y);
-            return Field[y, coordinate.X];
+            
+            return ocean1.Field[y, coordinate.X];
         }
 
         public Cell South()
         {
             //Cell[,] cells = new Cell[25, 70];
             int y;
-            y = (coordinate.Y + 1) % Rows;
-            return Field[y, coordinate.X];
+            y = (coordinate.Y + 1) % ocean1.Rows;
+            return ocean1.Field[y, coordinate.X];
         }
 
         public Cell West()
@@ -161,16 +169,22 @@ namespace ConsoleLife
             //Cell[,] cells = new Cell[25, 70];
             int x;
             x = (coordinate.X > 0) ? (coordinate.X - 1) : (coordinate.X);
-            return Field[coordinate.Y, x];
+            return ocean1.Field[coordinate.Y, x];
         }
 
         public Cell East()
         {
             //Cell[,] cells = new Cell[25, 70];
             int x;
-            x = (coordinate.X + 1) % Columns;
-            return Field[coordinate.Y, x];
+            x = (coordinate.X + 1) % ocean1.Columns;
+            return ocean1.Field[coordinate.Y, x];
 
+        }
+
+        public virtual Cell Reproduce(Coordinate coordinate)
+        {
+            Cell tmp = new Cell(Kind.Empty, coordinate);
+            return tmp;
         }
 
         public Cell()

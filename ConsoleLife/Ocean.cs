@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleLife
 {
-    class Ocean 
+    public class Ocean : Cell
     {
         public int Rows { get; set; } = 25;
 
@@ -24,15 +24,39 @@ namespace ConsoleLife
 
         public int MaxCount { get { return 400; }}
 
-
+        /// <summary>
+        /// Список добычи размещенный на поле
+        /// </summary>
         public List<Prey> listOfPreys = new List<Prey>();
 
+        /// <summary>
+        /// Список хищников размещенный на поле
+        /// </summary>
         public List<Predator> listOfPredators = new List<Predator>();
 
+        /// <summary>
+        /// Список преград размещенных на поле
+        /// </summary>
         public List<Obstacle> listOfObstacles = new List<Obstacle>();
 
         public Cell[,] Field;
-        //private readonly Kind kind;
+
+        /// <summary>
+        /// Устанавливает кол-во добычи
+        /// </summary>
+        /// <param name="count">Кол-во добычи</param>
+        internal void SetNumPrey(int count)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Возвращает кол-во добычи
+        /// </summary>
+        internal void GetNumPrey()
+        {
+            throw new NotImplementedException();
+        }
 
         /*
         public void GetNumPrey()
@@ -56,6 +80,9 @@ namespace ConsoleLife
         }
         */
 
+        /// <summary>
+        /// Добавляет преграды на поле
+        /// </summary>
         public void AddObstacles()
         {
             Coordinate coord = new Coordinate();
@@ -71,6 +98,9 @@ namespace ConsoleLife
             }
         }
 
+        /// <summary>
+        /// Добавляет добычу на поле
+        /// </summary>
         public void AddPrey()
         {
             Coordinate coord = new Coordinate();
@@ -86,6 +116,9 @@ namespace ConsoleLife
             }
         }
 
+        /// <summary>
+        /// Добавляет хищников на поле
+        /// </summary>
         public void AddPredator()
         {
             Coordinate coord = new Coordinate();
@@ -118,30 +151,15 @@ namespace ConsoleLife
            
         }
 
+        /// <summary>
+        /// Пересчитывает и выводит массив Field
+        /// </summary>
         public void DisplayCells()
         {
             for (int i = 0; i < Rows; i++)
             {
                 for (int j = 0; j < Columns; j++)
-                {
-                    //switch (Field[i, j].kind)
-                    //{
-                    //    case Kind.Empty:
-                    //        Field[i, j].Img = "-";
-                    //        break;
-                    //    case Kind.Prey:
-                    //        Field[i, j].Img = Prey.DefaultPreyImg;
-                    //        break;
-                    //    case Kind.Predator:
-                    //        Field[i, j].Img = Predator.DefaultPredatorImg;
-                    //        break;
-                    //    case Kind.Obstacles:
-                    //        Field[i, j].Img = Obstacle.DefaultObstacleImg;
-                    //        break;
-                    //    default:
-                    //        break;
-                    //}
-                    
+                {   
                     Console.Write(Field[i, j].Img);
                 }
                 Console.WriteLine();
@@ -149,6 +167,9 @@ namespace ConsoleLife
             
         }
 
+        /// <summary>
+        /// Отображает максимальную ограниченную область океана 
+        /// </summary>
         public void DisplayBorder()
         {
             for (int i = 0; i < Columns; i++)
@@ -158,11 +179,17 @@ namespace ConsoleLife
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// Отображает статистику по игре
+        /// </summary>
         public void DisplayStats()
         {
 
         }
       
+        /// <summary>
+        /// Запрашивает у пользователя кол-во итераций и начинает моделирование
+        /// </summary>
         public void Run()
         {
             if (IterationCount > 1000)
@@ -201,6 +228,7 @@ namespace ConsoleLife
             AddPredator();
             AddPrey();
             AddObstacles();
+            ocean1 = this;
             DisplayStats();
             DisplayBorder();
             DisplayCells();
@@ -221,6 +249,7 @@ namespace ConsoleLife
                     Field[i, j] = new Cell(empty, coordinate);
                 }
             }
+            ocean1 = this;
             
         }
         /// <summary>

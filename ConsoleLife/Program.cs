@@ -63,6 +63,7 @@ namespace ConsoleLife
                 Console.WriteLine(ocean.Rows);
                 
                 ocean.Initialize();
+                ocean.Run();
 
             }
            

@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace ConsoleLife
 {
-    public class Predator
+    public class Predator : Prey
     {
-        public Coordinate coordinate { get; set; }
+        public new Coordinate coordinate { get; set; }
 
-        public int TimeToReproduce { get; set; } = 6;
+        public new int TimeToReproduce { get; set; } = 6;
 
         public int TimeToFeed { get; set; } = 6;
 
         public static string DefaultPredatorImg { get { return "S"; } }
 
-        public void GetPreyNeighborCoord()
+        public new void GetPreyNeighborCoord()
         {
 
         }
@@ -31,12 +31,14 @@ namespace ConsoleLife
 
         }
 
-        public void Reproduce(Coordinate coordinate)
+        public override Cell Reproduce(Coordinate coordinate)
         {
-
+            Cell cell = new Cell(Kind.Predator);
+            return cell;
         }
 
         public Predator(Coordinate coordinate)
+            :base(coordinate)
         {
             this.coordinate = coordinate;
         }
