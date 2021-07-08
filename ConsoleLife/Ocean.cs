@@ -8,78 +8,24 @@ namespace ConsoleLife
 {
     public class Ocean : Cell
     {
-        public int Rows { get; set; } = 25;
+        public static int Rows { get; set; } = 25;
 
-        public int Columns { get; set; } = 70;
+        public static int Columns { get; set; } = 70;
 
         public int Size => Rows * Columns;
 
-        public int PreyCount { get; set; } = 150;
+        public static int PreyCount { get; set; } = 150;
 
-        public int PredatorsCount { get; set; } = 20;
+        public static int PredatorsCount { get; set; } = 25;
 
-        public int ObstaclesCount { get; set; } = 75;
+        public static int ObstaclesCount { get; set; } = 1;
 
         public int IterationCount { get; set; } = 1000;
 
-        public int MaxCount { get { return 400; }}
+        public int MaxCount { get { return 12; }}
 
-        /// <summary>
-        /// Список добычи размещенный на поле
-        /// </summary>
-        public List<Prey> listOfPreys = new List<Prey>();
-
-        /// <summary>
-        /// Список хищников размещенный на поле
-        /// </summary>
-        public List<Predator> listOfPredators = new List<Predator>();
-
-        /// <summary>
-        /// Список преград размещенных на поле
-        /// </summary>
-        public List<Obstacle> listOfObstacles = new List<Obstacle>();
-
-        public Cell[,] Field;
-
-        /// <summary>
-        /// Устанавливает кол-во добычи
-        /// </summary>
-        /// <param name="count">Кол-во добычи</param>
-        internal void SetNumPrey(int count)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Возвращает кол-во добычи
-        /// </summary>
-        internal void GetNumPrey()
-        {
-            throw new NotImplementedException();
-        }
-
-        /*
-        public void GetNumPrey()
-        {
-
-        }
-
-        public void SetNumPrey(int Count)
-        {
-
-        }
-
-        public void GetNumPredators()
-        {
-
-        }
-
-        public void SetNumPredators(int Count)
-        {
-
-        }
-        */
-
+        public static Cell[,] Field;
+      
         /// <summary>
         /// Добавляет преграды на поле
         /// </summary>
@@ -93,7 +39,7 @@ namespace ConsoleLife
                 Field[coord.Y, coord.X].Img = Obstacle.DefaultObstacleImg;
                 Field[coord.Y, coord.X].coordinate = coord;
                 Obstacle obs = new Obstacle(coord);
-                listOfObstacles.Add(obs);
+                //listOfObstacles.Add(obs);
 
             }
         }
@@ -110,8 +56,10 @@ namespace ConsoleLife
                 Field[coord.Y, coord.X].kind = Kind.Prey;
                 Field[coord.Y, coord.X].Img = Prey.DefaultPreyImg;
                 Field[coord.Y, coord.X].coordinate = coord;
+                Field[coord.Y, coord.X].TimeToReproduce = 6;
+                Field[coord.Y, coord.X].TimeToFeed = 0;
                 Prey prey = new Prey(coord);
-                listOfPreys.Add(prey);
+                //listOfPreys.Add(prey);
 
             }
         }
@@ -128,8 +76,10 @@ namespace ConsoleLife
                 Field[coord.Y, coord.X].kind = Kind.Predator;
                 Field[coord.Y, coord.X].Img = Predator.DefaultPredatorImg;
                 Field[coord.Y, coord.X].coordinate = coord;
+                Field[coord.Y, coord.X].TimeToFeed = 6;
+                Field[coord.Y, coord.X].TimeToReproduce = 6;
                 Predator predator = new Predator(coord);
-                listOfPredators.Add(predator);
+                //listOfPredators.Add(predator);
 
             }
 
@@ -182,9 +132,20 @@ namespace ConsoleLife
         /// <summary>
         /// Отображает статистику по игре
         /// </summary>
-        public void DisplayStats()
+        public void DisplayStats(int iterations)
         {
+            Console.WriteLine($"Количествово итераций: {iterations + 1}\tКоличествово добычи: {Ocean.PreyCount}\tКоличествово хищников: {Ocean.PredatorsCount}\t");
+        }
 
+        /// <summary>
+        /// Функции вывода поля на консоль
+        /// </summary>
+        public void Display(int iterations)
+        {
+            DisplayStats(iterations);
+            DisplayBorder();
+            DisplayCells();
+            DisplayBorder();
         }
       
         /// <summary>
@@ -197,22 +158,56 @@ namespace ConsoleLife
 
             for (int iter = 0; iter < IterationCount; iter++)
             {
+                Display(iter);
+                //System.Threading.Thread.Sleep(1000);
                 if (PreyCount > 0 && PredatorsCount > 0)
                 {
                     for (int i = 0; i < Rows; i++)
                     {
                         for (int j = 0; j < Columns; j++)
                         {
-                            Field[i, j].Process();
-                            DisplayStats();
-                            DisplayCells();
-                            DisplayBorder();
+                            Process(Field[i, j]);
                             
+                            //Console.Clear();
                         }
                     }
+                   
+                }
+                else
+                {
+                    Console.WriteLine("Конец игры");
+                    Environment.Exit(0);
                 }
             }
         }
+
+        public void Process(Cell cell)
+        {
+            if (cell.Img != DefaultEmptyImg)
+            {
+                if (cell.Img == Prey.DefaultPreyImg)
+                {
+                    Coordinate toCoord = new Coordinate();
+                    Coordinate fromCoord = new Coordinate();
+                    toCoord = GetEmptyNeighborCoord(cell.coordinate);
+                    fromCoord = cell.coordinate;
+
+                    cell.MoveFrom(fromCoord, toCoord, Kind.Prey);
+                }
+                else
+                {
+                    Coordinate toCoord = new Coordinate();
+                    Coordinate fromCoord = new Coordinate();
+                   
+                    toCoord = GetPreyNeighborCoord(cell.coordinate);
+                    fromCoord = cell.coordinate;
+
+                    cell.MoveFrom(fromCoord, toCoord, Kind.Predator);
+                }
+               
+            }
+        }
+
         /// <summary>
         /// Устанавливает кол-во добычи, хищников и преград
         /// </summary>
@@ -227,11 +222,8 @@ namespace ConsoleLife
         {
             AddPredator();
             AddPrey();
-            AddObstacles();
-            ocean1 = this;
-            DisplayStats();
-            DisplayBorder();
-            DisplayCells();
+            //AddObstacles();
+            //ocean1 = this;
         }
         /// <summary>
         /// Значения по умолчанию
@@ -249,7 +241,7 @@ namespace ConsoleLife
                     Field[i, j] = new Cell(empty, coordinate);
                 }
             }
-            ocean1 = this;
+            //ocean1 = this;
             
         }
         /// <summary>
@@ -259,8 +251,8 @@ namespace ConsoleLife
         /// <param name="Columns">Кол-во рядков</param>
         public Ocean(int Rows, int Columns, int IterationCount)
         {
-            this.Rows = Rows;
-            this.Columns = Columns;
+            Ocean.Rows = Rows;
+            Ocean.Columns = Columns;
             Kind empty = Kind.Empty;
             for (int i = 0; i < Rows; i++)
             {

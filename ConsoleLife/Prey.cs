@@ -10,7 +10,9 @@ namespace ConsoleLife
     {
 #pragma warning disable 0108
         public Coordinate coordinate { get; set; }
-        public int TimeToReproduce { get; set; } = 6;
+
+
+        //public int TimeToReproduce { get; set; } = 6;
 
         public static string DefaultPreyImg { get { return "f"; } }
 
@@ -19,19 +21,19 @@ namespace ConsoleLife
 
         }
 
-        public void MoveFrom(Coordinate from, Coordinate to)
+        public override void MoveFrom(Coordinate from, Coordinate to, Kind kind)
         {
             Cell toCell = new Cell(Kind.Prey);
             --TimeToReproduce;
             if (to.X != from.X && to.Y != from.Y)
             {
-                toCell = GetCellAt(to);
-                SetOffset(to);
+                //toCell = GetCellAt(to);
+                //SetOffset(to);
                 AssignCellAt(to, this);
 
                 if (TimeToReproduce <= 0)
                 {
-                    TimeToReproduce = TimeToReproduce;
+                    TimeToReproduce = 6;
                     AssignCellAt(from, Reproduce(from));
                 }
                 else
@@ -44,7 +46,7 @@ namespace ConsoleLife
         public override Cell Reproduce(Coordinate coordinate)
         {
             Prey tmp = new Prey(coordinate);
-            ocean1.SetNumPrey(ocean1.listOfPreys.Count + 1);
+            //ocean1.SetNumPrey(ocean1.listOfPreys.Count + 1);
             return tmp;
         }
 

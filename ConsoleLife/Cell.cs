@@ -25,57 +25,43 @@ namespace ConsoleLife
     public class Cell
     {
 
+        private readonly IOcean _owner;
+
+        public Cell(IOcean owner)
+        {
+            _owner = owner;
+        }
+
         public Kind? kind = null;
+
+        public int TimeToReproduce { get; set; } = 6;
+
+        public int TimeToFeed { get; set; } = 6;
 
         public string Img { get; set; } = "-";
 
+        public string DefaultEmptyImg { get; set; } = "-";
+
         public Coordinate coordinate;
 
-        public Ocean ocean1;
-
-
-        public virtual void Process()
+        public Cell GetNeighborWithImg(string img, Coordinate coordinate)
         {
-            Coordinate toCoord = new Coordinate();
-            toCoord = GetEmptyNeighborCoord();
-        }
-
-        public Cell GetNeighborWithKind(Kind? kind)
-        {
-            string img = "";
-            switch (kind)
-            {
-                case Kind.Empty:
-                    img = "-";
-                    break;
-                case Kind.Prey:
-                    img = "f";
-                    break;
-                case Kind.Predator:
-                    img = "S";
-                    break;
-                case Kind.Obstacles:
-                    img = "#";
-                    break;
-                default:
-                    break;
-            }
             Cell[] neighbors = new Cell[4];
-            //Coordinate c = new Coordinate();
 
             int step = 0;
 
-            if (North().Img == img)
-                neighbors[step++] = North();
 
-            if (South().Img == img)
-                neighbors[step++] = South();
+            if (North(coordinate).Img == img)
+                neighbors[step++] = North(coordinate);
 
-            if (East().Img == img)
-                neighbors[step++] = East();
+            if (South(coordinate).Img == img)
+                neighbors[step++] = South(coordinate);
 
-            if (West().Img == img)
-                neighbors[step++] = West();
+            if (East(coordinate).Img == img)
+                neighbors[step++] = East(coordinate);
+
+            if (West(coordinate).Img == img)
+                neighbors[step++] = West(coordinate);
             if (step == 0)
             {
                 return this;
@@ -91,35 +77,18 @@ namespace ConsoleLife
         /// <summary>
         /// Ищет пустую соседнюю ячейку
         /// </summary>
-        public Coordinate GetEmptyNeighborCoord()
+        public Coordinate GetEmptyNeighborCoord(Coordinate coordinate)
         {
-            //GetOffset();
-            //Cell cell = new Cell();
-            //cell = GetNeighborWithImg(Img);
-            return GetNeighborWithKind(Kind.Empty).coordinate;
+            return GetNeighborWithImg(DefaultEmptyImg, coordinate).coordinate;
         }
         /// <summary>
         /// Ищет соседнюю ячейку с добычей
         /// </summary>
-        public Coordinate GetPreyNeighborCoord()
+        public Coordinate GetPreyNeighborCoord(Coordinate coordinate)
         {
-            return GetNeighborWithKind(Kind.Prey).coordinate;
+            return GetNeighborWithImg(Prey.DefaultPreyImg, coordinate).coordinate;
         }
-        /// <summary>
-        /// Возвращает смещение
-        /// </summary>
-        public void GetOffset()
-        {
 
-        }
-        /// <summary>
-        /// Устанавливает смещение в newCoordinate
-        /// </summary>
-        /// <param name="coordinate">Координаты смещения</param>
-        public void SetOffset(Coordinate newCoordinate)
-        {
-
-        }
 
         /// <summary>
         /// Метод поиска соседей
@@ -128,7 +97,63 @@ namespace ConsoleLife
         /// <returns></returns>
         public Cell GetCellAt(Coordinate coordinate)
         {
-            return ocean1.Field[coordinate.Y, coordinate.X];
+            return Ocean.Field[coordinate.Y, coordinate.X];
+        }
+
+        public virtual void MoveFrom(Coordinate from, Coordinate to, Kind kind)
+        {
+            if (kind == Kind.Prey)
+            {
+                --TimeToReproduce;
+
+                if (to.X != from.X || to.Y != from.Y)
+                {
+                    AssignCellAt(to, this);
+
+                    if (TimeToReproduce <= 0)
+                    {
+                        TimeToReproduce = 6;
+                        AssignCellAt(from, Reproduce(from));
+                        
+                    }
+                    else
+                    {
+                        AssignCellAt(from, new Cell(Kind.Empty, from));
+                    }
+                }
+            }
+               
+            else
+            {
+                --TimeToReproduce;
+                --TimeToFeed;
+                if (TimeToFeed <= 0)
+                {
+                    AssignCellAt(from, new Cell(Kind.Empty, from));
+                    --Ocean.PredatorsCount;
+                }
+
+
+                if (to.X != from.X || to.Y != from.Y)
+                {
+                    --Ocean.PreyCount;
+                    TimeToFeed = 6;
+                    AssignCellAt(to, this);
+
+                    if (TimeToReproduce <= 0)
+                    {
+                        TimeToReproduce = 6;
+                        AssignCellAt(from, Reproduce(from, Kind.Predator));
+                    }
+                    else
+                    {
+                        AssignCellAt(from, new Cell(Kind.Empty, from));
+                    }
+                }
+            }
+                
+
+            
         }
 
 
@@ -139,7 +164,7 @@ namespace ConsoleLife
         /// <param name="cell">Ячейка</param>
         public void AssignCellAt(Coordinate coordinate, Cell cell)
         {
-            ocean1.Field[coordinate.Y, coordinate.X] = cell;
+            Ocean.Field[coordinate.Y, coordinate.X] = cell;
         }
 
         public void DyingObject()
@@ -147,59 +172,100 @@ namespace ConsoleLife
 
         }
 
-        public Cell North()
+        public Cell North(Coordinate coordinate)
         {
             int y;
             //Cell[,] cells = new Cell[25, 70];
             y = (coordinate.Y > 0) ? (coordinate.Y - 1) : (coordinate.Y);
-            
-            return ocean1.Field[y, coordinate.X];
+
+            return Ocean.Field[y, coordinate.X];
         }
 
-        public Cell South()
+        public Cell South(Coordinate coordinate)
         {
-            //Cell[,] cells = new Cell[25, 70];
             int y;
-            y = (coordinate.Y + 1) % ocean1.Rows;
-            return ocean1.Field[y, coordinate.X];
+            y = (coordinate.Y + 1) % Ocean.Rows;
+            return Ocean.Field[y, coordinate.X];
         }
 
-        public Cell West()
+        public Cell West(Coordinate coordinate)
         {
-            //Cell[,] cells = new Cell[25, 70];
             int x;
             x = (coordinate.X > 0) ? (coordinate.X - 1) : (coordinate.X);
-            return ocean1.Field[coordinate.Y, x];
+            return Ocean.Field[coordinate.Y, x];
         }
 
-        public Cell East()
+        public Cell East(Coordinate coordinate)
         {
-            //Cell[,] cells = new Cell[25, 70];
             int x;
-            x = (coordinate.X + 1) % ocean1.Columns;
-            return ocean1.Field[coordinate.Y, x];
+            x = (coordinate.X + 1) % Ocean.Columns;
+            return Ocean.Field[coordinate.Y, x];
 
         }
 
         public virtual Cell Reproduce(Coordinate coordinate)
         {
-            Cell tmp = new Cell(Kind.Empty, coordinate);
+            Cell tmp = new Cell(Kind.Prey, coordinate);
             return tmp;
         }
+
+        public virtual Cell Reproduce(Coordinate coordinate, Kind kind)
+        {
+            Cell tmp = new Cell(kind, coordinate);
+            return tmp;
+        }
+
 
         public Cell()
         {
 
         }
+        public Cell(Kind kind, Coordinate coordinate, int timeTo)
+        {
+            this.kind = kind;
+            this.coordinate = coordinate;
+            if (kind == Kind.Prey)
+            {
+                TimeToFeed = 0;
+                TimeToReproduce = timeTo;
+            }
+            else
+            {
+                TimeToFeed = timeTo;
+                TimeToReproduce = 0;
+            }
+        }
         public Cell(Kind? kind)
         {
             this.kind = kind;
+            if (kind == Kind.Empty)
+            {
+                TimeToReproduce = 0;
+                TimeToFeed = 0;
+            }
         }
 
         public Cell(Kind kind, Coordinate coordinate)
         {
             this.kind = kind;
             this.coordinate = coordinate;
+            if (kind == Kind.Empty)
+            {
+                TimeToReproduce = 0;
+                TimeToFeed = 0;
+            }
+            else if(kind == Kind.Prey)
+            {
+                TimeToReproduce = 6;
+                TimeToFeed = 0;
+                this.Img = Prey.DefaultPreyImg;
+            }
+            else if (kind == Kind.Predator)
+            {
+                TimeToReproduce = 6;
+                TimeToFeed = 6;
+                this.Img = Predator.DefaultPredatorImg;
+            }
         }
 
 

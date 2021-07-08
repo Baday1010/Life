@@ -60,7 +60,7 @@ namespace ConsoleLife
                         break;
                 }
                 Console.Clear();
-                Console.WriteLine(ocean.Rows);
+                
                 
                 ocean.Initialize();
                 ocean.Run();
