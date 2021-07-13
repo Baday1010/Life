@@ -91,63 +91,6 @@ namespace Life
             
         }
 
-        //public void MoveFrom(Coordinate from, Coordinate to, Kind kind)
-        //{
-        //    if (kind == Kind.Prey)
-        //    {
-        //        --TimeToReproduce;
-
-        //        if (to.X != from.X || to.Y != from.Y)
-        //        {
-        //            AssignCellAt(to, this);
-
-        //            if (TimeToReproduce <= 0)
-        //            {
-        //                TimeToReproduce = 6;
-        //                AssignCellAt(from, Reproduce(from));
-
-        //            }
-        //            else
-        //            {
-        //                AssignCellAt(from, new Cell(Kind.Empty, from));
-        //            }
-        //        }
-        //    }
-
-        //    else
-        //    {
-        //        --TimeToReproduce;
-        //        --TimeToFeed;
-        //        if (TimeToFeed <= 0)
-        //        {
-        //            AssignCellAt(from, new Cell(Kind.Empty, from));
-        //            --Ocean.PredatorsCount;
-        //        }
-
-
-        //        if (to.X != from.X || to.Y != from.Y)
-        //        {
-        //            --Ocean.PreyCount;
-        //            TimeToFeed = 6;
-        //            AssignCellAt(to, this);
-
-        //            if (TimeToReproduce <= 0)
-        //            {
-        //                TimeToReproduce = 6;
-        //                AssignCellAt(from, Reproduce(from, Kind.Predator));
-        //            }
-        //            else
-        //            {
-        //                AssignCellAt(from, new Cell(Kind.Empty, from));
-        //            }
-        //        }
-        //    }
-
-
-
-        //}
-
-
         /// <summary>
         /// Помещает ячейку cell в место с координатами coordinate в массие Field из Ocean 
         /// </summary>
