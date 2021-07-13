@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Life
 {
@@ -181,7 +177,7 @@ namespace Life
         private Cell South(Coordinate coordinate)
         {
             int y;
-            y = (coordinate.Y + 1) % Ocean.Rows;
+            y = (coordinate.Y + 1) % (int)Ocean.Rows;
             return Ocean.Field[y, coordinate.X];
         }
 
@@ -205,7 +201,7 @@ namespace Life
         private Cell East(Coordinate coordinate)
         {
             int x;
-            x = (coordinate.X + 1) % Ocean.Columns;
+            x = (coordinate.X + 1) % (int)Ocean.Columns;
             return Ocean.Field[coordinate.Y, x];
 
         }

@@ -1,28 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Life
 {
     public class Ocean : Cell
     {
-        public static int Rows { get; set; } = 3;
+        public static uint Rows { get; set; } = 3;
 
-        public static int Columns { get; set; } = 3;
+        public static uint Columns { get; set; } = 3;
 
-        public int Size => Rows * Columns;
+        private uint Size { get; set; }
 
-        public static int PreyCount { get; set; } = 4;
+        public static uint PreyCount { get; set; } = 4;
 
-        public static int PredatorsCount { get; set; } = 2;
+        public static uint PredatorsCount { get; set; } = 2;
 
-        public static int ObstaclesCount { get; set; } = 0;
+        public static uint ObstaclesCount { get; set; } = 0;
 
-        public int IterationCount { get; set; } = 1000;
+        public uint IterationCount { get; set; } = 1000;
 
-        public int MaxCount { get { return 6; }}
+        private uint MaxField { get { return 2000; }}
 
         public static Cell[,] Field;
       
@@ -69,6 +65,10 @@ namespace Life
 
         }
 
+        /// <summary>
+        /// Случайным образом выбирает координаты в массиве Field и проверяет пустая ли ячейка
+        /// </summary>
+        /// <returns>Возвращает координаты пустой ячейки</returns>
         private Coordinate GetEmptyCellCoord()
         {
             Random rand = new Random();
@@ -76,8 +76,8 @@ namespace Life
 
             do
             {
-                empty.X = rand.Next(0, Columns);
-                empty.Y = rand.Next(0, Rows);
+                empty.X = rand.Next(0, (int)Columns);
+                empty.Y = rand.Next(0, (int)Rows);
             } while (Field[empty.Y ,empty.X].Img != "-");
             empty = Field[empty.Y, empty.X].coordinate;
             return empty;
@@ -92,8 +92,31 @@ namespace Life
             for (int i = 0; i < Rows; i++)
             {
                 for (int j = 0; j < Columns; j++)
-                {   
-                    Console.Write(Field[i, j].Img);
+                {
+                    switch (Field[i, j].Img)
+                    {
+                        case "-":
+                            Console.Write(Field[i, j].Img);
+                            break;
+                        case "f":
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write(Field[i, j].Img);
+                            Console.ResetColor();
+                            break;
+                        case "S":
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write(Field[i, j].Img);
+                            Console.ResetColor();
+                            break;
+                        case "#":
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.Write(Field[i, j].Img);
+                            Console.ResetColor();
+                            break;
+                        default:
+                            break;
+                    }
+
                 }
                 Console.WriteLine();
             }
@@ -105,10 +128,12 @@ namespace Life
         /// </summary>
         public void DisplayBorder()
         {
+            Console.ForegroundColor = ConsoleColor.White;
             for (int i = 0; i < Columns; i++)
             {
                 Console.Write("=");
             }
+            Console.ResetColor();
             Console.WriteLine();
         }
 
@@ -143,7 +168,7 @@ namespace Life
             for (int iter = 0; iter < IterationCount; iter++)
             {
                 Display(iter);
-                //System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(1000);
                 if (PreyCount > 0 && PredatorsCount > 0)
                 {
                     for (int i = 0; i < Rows; i++)
@@ -153,7 +178,7 @@ namespace Life
                             Field[i, j].Process();
                         }
                     }
-                    //Console.Clear();
+                    Console.Clear();
                 }
                 else
                 {
@@ -162,7 +187,6 @@ namespace Life
                 }
             }
         }
-
 
         /// <summary>
         /// Устанавливает кол-во добычи, хищников и преград
@@ -205,10 +229,32 @@ namespace Life
         /// </summary>
         /// <param name="Rows">Кол-во строк</param>
         /// <param name="Columns">Кол-во рядков</param>
-        public Ocean(int Rows, int Columns, int IterationCount)
+        /// <param name="IterationCount">Кол-во итераций</param>
+        /// <param name="PreyCount">Кол-во добычи</param>
+        /// <param name="PredatorsCount">Кол-во хищников</param>
+        /// <param name="ObstaclesCount">Кол-во препятствий</param>
+        public Ocean(int Rows, int Columns, int IterationCount, int PredatorsCount, int PreyCount, int ObstaclesCount)
         {
-            Ocean.Rows = Rows;
-            Ocean.Columns = Columns;
+            Size = (uint)Rows * (uint)Columns;
+            if ((PreyCount + PreyCount + ObstaclesCount) > Size)
+            {
+                Console.WriteLine("Объекты не помещаются на заданном поле");
+                Environment.Exit(0);
+            }
+
+            if (Size > MaxField)
+            {
+                Console.WriteLine("Поле слишком огромное. Вложитесь в 2000 клетки");
+                Environment.Exit(0);
+            }
+
+            Ocean.Rows = (uint)Rows;
+            Ocean.Columns = (uint)Columns;
+            Ocean.PreyCount = (uint)PreyCount;
+            Ocean.PredatorsCount = (uint)PredatorsCount;
+            Ocean.ObstaclesCount = (uint)ObstaclesCount;
+            this.IterationCount = (uint)IterationCount;
+            Field = new Cell[Rows, Columns];
             Kind empty = Kind.Empty;
             for (int i = 0; i < Rows; i++)
             {

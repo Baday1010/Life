@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Life
 {
@@ -47,17 +43,20 @@ namespace Life
                             int res4 = Convert.ToInt32(h);
                             int res5 = Convert.ToInt32(p);
                             int res6 = Convert.ToInt32(prep);
+
                         }
                         catch (OverflowException)
                         {
                             Console.WriteLine("One or more values outside the range of the Int32 type.");
+                            Environment.Exit(0);
                         }
                         catch (FormatException)
                         {
                             Console.WriteLine("One or more values are not in a recognizable format.");
+                            Environment.Exit(0);
                         }
-                        ocean = new Ocean(Int32.Parse(r), Int32.Parse(c), Int32.Parse(i));
-                        Console.Clear();
+                        ocean = new Ocean(Int32.Parse(r), Int32.Parse(c), Int32.Parse(i), Int32.Parse(h), Int32.Parse(p), Int32.Parse(prep));
+                        
                         break;
                     default:
                         Console.WriteLine("Введите корректные данные");
