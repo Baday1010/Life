@@ -14,7 +14,7 @@ namespace Life
 
         public static uint PredatorsCount { get; set; } = 2;
 
-        public static uint ObstaclesCount { get; set; } = 0;
+        public static uint ObstaclesCount { get; set; } = 1;
 
         public uint IterationCount { get; set; } = 1000;
 
@@ -195,6 +195,7 @@ namespace Life
         {
             InitCells();
         }
+
         /// <summary>
         /// Запрашивает кол-во преград, добычи и хищников
         /// </summary>
@@ -202,12 +203,15 @@ namespace Life
         {
             AddPredator();
             AddPrey();
-            //AddObstacles();
+            AddObstacles();
             //ocean1 = this;
         }
+
         /// <summary>
         /// Значения по умолчанию
         /// </summary>
+        /// 
+
         public Ocean()
         {
             Field = new Cell[Rows, Columns];
@@ -224,6 +228,7 @@ namespace Life
             //ocean1 = this;
             
         }
+
         /// <summary>
         /// Инициализация Ocean со своими параметрами
         /// </summary>

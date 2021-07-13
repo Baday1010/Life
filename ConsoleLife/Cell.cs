@@ -42,6 +42,7 @@ namespace Life
         /// <param name="img">Изображения обитателя</param>
         /// <param name="coordinate">Нынешние координаты ячейки</param>
         /// <returns></returns>
+        
         public Cell GetNeighborWithImg(string img, Coordinate coordinate)
         {
             Cell[] neighbors = new Cell[4];
@@ -75,6 +76,7 @@ namespace Life
         /// <summary>
         /// Ищет пустую соседнюю ячейку
         /// </summary>
+        
         public Coordinate GetEmptyNeighborCoord(Coordinate coordinate)
         {
             return GetNeighborWithImg(DefaultEmptyImg, coordinate).coordinate;
@@ -83,6 +85,7 @@ namespace Life
         /// <summary>
         /// Перемещает ячейки согласно правилам каждого подкласса и обновляет массив Field
         /// </summary>
+        
         public virtual void Process()
         {
             
@@ -150,6 +153,7 @@ namespace Life
         /// </summary>
         /// <param name="coordinate">Координаты ячейки</param>
         /// <param name="cell">Ячейка</param>
+        
         public void AssignCellAt(Coordinate coordinate, Cell cell)
         {
             Ocean.Field[coordinate.Y, coordinate.X] = cell;
@@ -160,6 +164,7 @@ namespace Life
         /// </summary>
         /// <param name="coordinate">Нынешние координаты ячейки</param>
         /// <returns>Возвращает ячейку из массива Field</returns>
+        
         private Cell North(Coordinate coordinate)
         {
             int y;
@@ -174,6 +179,7 @@ namespace Life
         /// </summary>
         /// <param name="coordinate">Нынешние координаты ячейки</param>
         /// <returns>Возвращает ячейку из массива Field</returns>
+        
         private Cell South(Coordinate coordinate)
         {
             int y;
@@ -186,6 +192,7 @@ namespace Life
         /// </summary>
         /// <param name="coordinate">Нынешние координаты ячейки</param>
         /// <returns>Возвращает ячейку из массива Field</returns>
+        
         private Cell West(Coordinate coordinate)
         {
             int x;
@@ -198,6 +205,7 @@ namespace Life
         /// </summary>
         /// <param name="coordinate">Нынешние координаты ячейки</param>
         /// <returns>Возвращает ячейку из массива Field</returns>
+        
         private Cell East(Coordinate coordinate)
         {
             int x;
@@ -212,12 +220,10 @@ namespace Life
             return tmp;
         }
 
-
         public Cell()
         {
 
         }
-
 
         public Cell(Kind kind, Coordinate coordinate)
         {

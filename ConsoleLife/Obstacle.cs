@@ -7,6 +7,8 @@
         public Obstacle(Coordinate coordinate)
         {
             this.coordinate = coordinate;
+            Img = DefaultObstacleImg;
+            kind = Kind.Obstacles;
         }
     }
 }

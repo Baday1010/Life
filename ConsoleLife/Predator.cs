@@ -11,6 +11,7 @@
         /// <summary>
         /// Ищет соседнюю ячейку с добычей
         /// </summary>
+        
         public Coordinate GetPreyNeighborCoord(Coordinate coordinate)
         {
             return GetNeighborWithImg(Prey.DefaultPreyImg, coordinate).coordinate;
@@ -19,6 +20,8 @@
         /// <summary>
         /// Перемещает ячейки согласно правилам каждого подкласса и обновляет массив Field
         /// </summary>
+        /// 
+        
         public override void Process()
         {
             Coordinate toCoord = new Coordinate();
@@ -44,6 +47,9 @@
             }
         }
 
+        /// <summary>
+        /// Убивает хищника в случае если таймер голода подошел к нулю
+        /// </summary>
         private void Kill()
         {
             AssignCellAt(this.coordinate, new Cell(Kind.Empty, this.coordinate));
@@ -55,6 +61,7 @@
         /// </summary>
         /// <param name="from">Нынешнее местоположение</param>
         /// <param name="to">Местоположение для перемещения</param>
+        
         public void MoveFrom(Coordinate from, Coordinate to)
         {
             --TimeToReproduce;
@@ -80,12 +87,14 @@
         /// </summary>
         /// <param name="coordinate"></param>
         /// <returns>Возвращает объект типа Predator</returns>
+        
         public override Cell Reproduce(Coordinate coordinate)
         {
             Predator p = new Predator(coordinate);
             ++Ocean.PredatorsCount;
             return p;
         }
+        
         public Predator()
         {
 
