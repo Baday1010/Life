@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleLife
+namespace Life
 {
-    public class Obstacle
+    public class Obstacle : Cell
     {
         public static string DefaultObstacleImg { get { return "#"; } }
-
-        public Coordinate coordinate { get; set; }
 
         public Obstacle(Coordinate coordinate)
         {

@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleLife
+namespace Life
 {
     public class Predator : Cell
     {
         public int TimeToFeed { get; set; } = 6;
+
+        public int TimeToReproduce { get; set; } = 6;
 
         public static string DefaultPredatorImg { get { return "S"; } }
 
@@ -20,62 +22,90 @@ namespace ConsoleLife
             return GetNeighborWithImg(Prey.DefaultPreyImg, coordinate).coordinate;
         }
 
-        public void Process(Cell cell)
+        /// <summary>
+        /// Перемещает ячейки согласно правилам каждого подкласса и обновляет массив Field
+        /// </summary>
+        public override void Process()
         {
             Coordinate toCoord = new Coordinate();
-            --cell.TimeToFeed;
-            if (cell.TimeToFeed <= 0)
+            --TimeToFeed;
+            if (TimeToFeed <= 0)
             {
-                Kill(cell);
+                Kill();
             }
             else
             {
-                toCoord = GetPreyNeighborCoord(cell.coordinate);
-                if (toCoord.X != cell.coordinate.X || toCoord.Y != cell.coordinate.Y)
+                toCoord = GetPreyNeighborCoord(this.coordinate);
+                if (toCoord.X != this.coordinate.X || toCoord.Y != this.coordinate.Y)
                 {
                     --Ocean.PreyCount;
-                    cell.TimeToFeed = 6;
-                    MoveFrom(cell.coordinate, toCoord, Kind.Predator);
+                    TimeToFeed = 6;
+                    MoveFrom(this.coordinate, toCoord);
                 }
                 else
                 {
-                    toCoord = GetEmptyNeighborCoord(cell.coordinate);
-
+                    toCoord = GetEmptyNeighborCoord(this.coordinate);
+                    MoveFrom(this.coordinate, toCoord);
                 }
             }
         }
 
-        private void Kill(Cell cell)
+        private void Kill()
         {
-            AssignCellAt(cell.coordinate, new Cell(Kind.Empty, cell.coordinate));
+            AssignCellAt(this.coordinate, new Cell(Kind.Empty, this.coordinate));
             --Ocean.PredatorsCount;
         }
 
-        public void MoveFrom(int from, int to)
+        /// <summary>
+        /// Перемещает из координаты from в координаты to в массиве Field
+        /// </summary>
+        /// <param name="from">Нынешнее местоположение</param>
+        /// <param name="to">Местоположение для перемещения</param>
+        public void MoveFrom(Coordinate from, Coordinate to)
         {
+            --TimeToReproduce;
+            if (to.X != from.X || to.Y != from.Y)
+            {
+                this.coordinate = to;
+                AssignCellAt(to, this);
 
+                if (TimeToReproduce <= 0)
+                {
+                    TimeToReproduce = 6;
+                    AssignCellAt(from, Reproduce(from));
+                }
+                else
+                {
+                    AssignCellAt(from, new Cell(Kind.Empty, from));
+                }
+            }
         }
 
-        //public override Cell Reproduce(Coordinate coordinate)
-        //{
-        //    Cell cell = new Cell(Kind.Predator);
-        //    return cell;
-        //}
-
-        //public Predator(Coordinate coordinate)
-        //    :base(coordinate)
-        //{
-        //    this.coordinate = coordinate;
-        //}
-
+        /// <summary>
+        /// Воспроизводит себя в ячейке с заданной координатой
+        /// </summary>
+        /// <param name="coordinate"></param>
+        /// <returns>Возвращает объект типа Predator</returns>
+        public override Cell Reproduce(Coordinate coordinate)
+        {
+            Predator p = new Predator(coordinate);
+            ++Ocean.PredatorsCount;
+            return p;
+        }
         public Predator()
         {
 
         }
 
+        /// <summary>
+        /// Конструктор объекта Predator
+        /// </summary>
+        /// <param name="coordinate">Задает местоположение объекта в массиве ячеек Cell</param>
         public Predator(Coordinate coordinate)
         {
             this.coordinate = coordinate;
+            Img = DefaultPredatorImg;
+            kind = Kind.Predator;
         }
     }
 }

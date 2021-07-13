@@ -4,25 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleLife
+namespace Life
 {
     public class Ocean : Cell
     {
-        public static int Rows { get; set; } = 25;
+        public static int Rows { get; set; } = 3;
 
-        public static int Columns { get; set; } = 70;
+        public static int Columns { get; set; } = 3;
 
         public int Size => Rows * Columns;
 
-        public static int PreyCount { get; set; } = 150;
+        public static int PreyCount { get; set; } = 4;
 
-        public static int PredatorsCount { get; set; } = 25;
+        public static int PredatorsCount { get; set; } = 2;
 
-        public static int ObstaclesCount { get; set; } = 1;
+        public static int ObstaclesCount { get; set; } = 0;
 
         public int IterationCount { get; set; } = 1000;
 
-        public int MaxCount { get { return 12; }}
+        public int MaxCount { get { return 6; }}
 
         public static Cell[,] Field;
       
@@ -35,12 +35,8 @@ namespace ConsoleLife
             for (int i = 0; i < ObstaclesCount; i++)
             {
                 coord = GetEmptyCellCoord();
-                Field[coord.Y, coord.X].kind = Kind.Obstacles;
-                Field[coord.Y, coord.X].Img = Obstacle.DefaultObstacleImg;
-                Field[coord.Y, coord.X].coordinate = coord;
                 Obstacle obs = new Obstacle(coord);
-                //listOfObstacles.Add(obs);
-
+                Field[coord.Y, coord.X] = obs;
             }
         }
 
@@ -53,14 +49,8 @@ namespace ConsoleLife
             for (int i = 0; i < PreyCount; i++)
             {
                 coord = GetEmptyCellCoord();
-                Field[coord.Y, coord.X].kind = Kind.Prey;
-                Field[coord.Y, coord.X].Img = Prey.DefaultPreyImg;
-                Field[coord.Y, coord.X].coordinate = coord;
-                Field[coord.Y, coord.X].TimeToReproduce = 6;
-                Field[coord.Y, coord.X].TimeToFeed = 0;
                 Prey prey = new Prey(coord);
-                //listOfPreys.Add(prey);
-
+                Field[coord.Y, coord.X] = prey;
             }
         }
 
@@ -73,14 +63,8 @@ namespace ConsoleLife
             for (int i = 0; i < PredatorsCount; i++)
             {
                 coord = GetEmptyCellCoord();
-                Field[coord.Y, coord.X].kind = Kind.Predator;
-                Field[coord.Y, coord.X].Img = Predator.DefaultPredatorImg;
-                Field[coord.Y, coord.X].coordinate = coord;
-                Field[coord.Y, coord.X].TimeToFeed = 6;
-                Field[coord.Y, coord.X].TimeToReproduce = 6;
                 Predator predator = new Predator(coord);
-                //listOfPredators.Add(predator);
-
+                Field[coord.Y, coord.X] = predator;
             }
 
         }
@@ -89,12 +73,11 @@ namespace ConsoleLife
         {
             Random rand = new Random();
             Coordinate empty = new Coordinate();
-            //int x;
-            //int y;
+
             do
             {
-                empty.X = rand.Next(0, Columns - 1);
-                empty.Y = rand.Next(0, Rows - 1);
+                empty.X = rand.Next(0, Columns);
+                empty.Y = rand.Next(0, Rows);
             } while (Field[empty.Y ,empty.X].Img != "-");
             empty = Field[empty.Y, empty.X].coordinate;
             return empty;
@@ -134,7 +117,8 @@ namespace ConsoleLife
         /// </summary>
         public void DisplayStats(int iterations)
         {
-            Console.WriteLine($"Количествово итераций: {iterations + 1}\tКоличествово добычи: {Ocean.PreyCount}\tКоличествово хищников: {Ocean.PredatorsCount}\t");
+            Console.WriteLine($"Количествово итераций: {iterations + 1}\tКоличествово добычи: {Ocean.PreyCount}" +
+                $"\tКоличествово хищников: {Ocean.PredatorsCount}\t");
         }
 
         /// <summary>
@@ -166,47 +150,19 @@ namespace ConsoleLife
                     {
                         for (int j = 0; j < Columns; j++)
                         {
-                            Process(Field[i, j]);
-                            
-                            //Console.Clear();
+                            Field[i, j].Process();
                         }
                     }
-                   
+                    //Console.Clear();
                 }
                 else
                 {
-                    Console.WriteLine("Конец игры");
+                    Console.WriteLine("Конец игры! Для выхода нажмите любую кнопку (на клавиатуре)");
                     Environment.Exit(0);
                 }
             }
         }
 
-        public void Process(Cell cell)
-        {
-            if (cell.Img != DefaultEmptyImg)
-            {
-                if (cell.Img == Prey.DefaultPreyImg)
-                {
-                    Coordinate toCoord = new Coordinate();
-                    Coordinate fromCoord = new Coordinate();
-                    toCoord = GetEmptyNeighborCoord(cell.coordinate);
-                    fromCoord = cell.coordinate;
-
-                    cell.MoveFrom(fromCoord, toCoord, Kind.Prey);
-                }
-                else
-                {
-                    Coordinate toCoord = new Coordinate();
-                    Coordinate fromCoord = new Coordinate();
-                   
-                    toCoord = GetPreyNeighborCoord(cell.coordinate);
-                    fromCoord = cell.coordinate;
-
-                    cell.MoveFrom(fromCoord, toCoord, Kind.Predator);
-                }
-               
-            }
-        }
 
         /// <summary>
         /// Устанавливает кол-во добычи, хищников и преград
