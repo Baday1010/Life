@@ -1,4 +1,5 @@
 ﻿using System;
+using ConsoleLife.Exception;
 
 namespace Life
 {
@@ -178,12 +179,20 @@ namespace Life
                             Field[i, j].Process();
                         }
                     }
+
+                    for (int i = 0; i < Rows; i++)
+                    {
+                        for (int j = 0; j < Columns; j++)
+                        {
+                            Field[i, j].IsMoved = false;
+                        }
+                    }
                     Console.Clear();
                 }
                 else
                 {
                     Console.WriteLine("Конец игры! Для выхода нажмите любую кнопку (на клавиатуре)");
-                    Environment.Exit(0);
+                    break;
                 }
             }
         }
@@ -241,6 +250,12 @@ namespace Life
         public Ocean(int Rows, int Columns, int IterationCount, int PredatorsCount, int PreyCount, int ObstaclesCount)
         {
             Size = (uint)Rows * (uint)Columns;
+
+            if (Size > 2000) { throw new OceanException("Поле игры превышает 2000 ячеек", Size); }
+                    
+
+
+
             if ((PreyCount + PreyCount + ObstaclesCount) > Size)
             {
                 Console.WriteLine("Объекты не помещаются на заданном поле");

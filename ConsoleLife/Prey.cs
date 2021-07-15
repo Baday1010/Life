@@ -16,6 +16,7 @@
             Coordinate fromCoord = new Coordinate();
             toCoord = GetEmptyNeighborCoord(this.coordinate);
             fromCoord = this.coordinate;
+            this.IsMoved = true;
             MoveFrom(fromCoord, toCoord);
             
         }

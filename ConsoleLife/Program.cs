@@ -1,4 +1,5 @@
 ﻿using System;
+using ConsoleLife.Exception;
 
 namespace Life
 {
@@ -23,40 +24,55 @@ namespace Life
                         ocean = new Ocean();
                         break;
                     case 2:
-                        Console.WriteLine("Введите кол-во рядков: ");
-                        string r = Console.ReadLine();
-                        Console.WriteLine("Введите кол-во столбцов: ");
-                        string c = Console.ReadLine();
-                        Console.WriteLine("Введите кол-во итераций: ");
-                        string i = Console.ReadLine();
-                        Console.WriteLine("Введите кол-во Хищников: ");
-                        string h = Console.ReadLine();
-                        Console.WriteLine("Введите кол-во Добычи: ");
-                        string p = Console.ReadLine();
-                        Console.WriteLine("Введите кол-во Препятствий: ");
-                        string prep = Console.ReadLine();
-                        try
+                        bool flag;
+                        do
                         {
-                            int res = Convert.ToInt32(r);
-                            int res2 = Convert.ToInt32(c);
-                            int res3 = Convert.ToInt32(i);
-                            int res4 = Convert.ToInt32(h);
-                            int res5 = Convert.ToInt32(p);
-                            int res6 = Convert.ToInt32(prep);
 
-                        }
-                        catch (OverflowException)
-                        {
-                            Console.WriteLine("One or more values outside the range of the Int32 type.");
-                            Environment.Exit(0);
-                        }
-                        catch (FormatException)
-                        {
-                            Console.WriteLine("One or more values are not in a recognizable format.");
-                            Environment.Exit(0);
-                        }
-                        ocean = new Ocean(Int32.Parse(r), Int32.Parse(c), Int32.Parse(i), Int32.Parse(h), Int32.Parse(p), Int32.Parse(prep));
-                        
+                            Console.WriteLine("Введите кол-во рядков: ");
+                            string rowsStr = Console.ReadLine();
+                            Console.WriteLine("Введите кол-во столбцов: ");
+                            string columnsStr = Console.ReadLine();
+                            Console.WriteLine("Введите кол-во итераций: ");
+                            string iterationsStr = Console.ReadLine();
+                            Console.WriteLine("Введите кол-во Хищников: ");
+                            string predatorsStr = Console.ReadLine();
+                            Console.WriteLine("Введите кол-во Добычи: ");
+                            string preysStr = Console.ReadLine();
+                            Console.WriteLine("Введите кол-во Препятствий: ");
+                            string obsStr = Console.ReadLine();
+                            try
+                            {
+                                int rowsInt = Convert.ToInt32(rowsStr);
+                                int columnsInt = Convert.ToInt32(columnsStr);
+                                int iterationsInt = Convert.ToInt32(iterationsStr);
+                                int predatorsInt = Convert.ToInt32(predatorsStr);
+                                int preysInt = Convert.ToInt32(preysStr);
+                                int obsInt = Convert.ToInt32(obsStr);
+                                flag = false;
+
+                                ocean = new Ocean(Int32.Parse(rowsStr), Int32.Parse(columnsStr), Int32.Parse(iterationsStr),
+                                    Int32.Parse(predatorsStr), Int32.Parse(preysStr), Int32.Parse(obsStr));
+
+                            }
+                            catch (OverflowException)
+                            {
+                                Console.WriteLine("One or more values outside the range of the Int32 type.");
+                                flag = true;
+                            }
+                            catch (FormatException)
+                            {
+                                Console.WriteLine("One or more values are not in a recognizable format.");
+                                flag = true;
+                            }
+                            catch(OceanException ex)
+                            {
+                                Console.WriteLine($"Error: {ex.Message}");
+                                Console.WriteLine($"Size of ocean outside the range: {ex.Value}");
+                                flag = true;
+                            }
+                            
+                        } while (flag == true);
+
                         break;
                     default:
                         Console.WriteLine("Введите корректные данные");

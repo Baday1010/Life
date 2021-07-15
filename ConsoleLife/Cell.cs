@@ -30,6 +30,8 @@ namespace Life
 
         public Kind? kind = null;
 
+        public bool IsMoved = false;
+
         public string Img { get; set; } = "-";
 
         public string DefaultEmptyImg { get; set; } = "-";

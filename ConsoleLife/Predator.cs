@@ -33,6 +33,7 @@
             else
             {
                 toCoord = GetPreyNeighborCoord(this.coordinate);
+                this.IsMoved = true;
                 if (toCoord.X != this.coordinate.X || toCoord.Y != this.coordinate.Y)
                 {
                     --Ocean.PreyCount;
