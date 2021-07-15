@@ -95,7 +95,10 @@
             ++Ocean.PredatorsCount;
             return p;
         }
-        
+
+        /// <summary>
+        /// Конструктор объекта Predator
+        /// </summary>
         public Predator()
         {
 
