@@ -19,8 +19,6 @@ namespace Life
 
         public uint IterationCount { get; set; } = 1000;
 
-        private uint MaxField { get { return 2000; }}
-
         public static Cell[,] Field;
       
         /// <summary>
@@ -252,21 +250,13 @@ namespace Life
             Size = (uint)Rows * (uint)Columns;
 
             if (Size > 2000) { throw new OceanException("Поле игры превышает 2000 ячеек", Size); }
-                    
 
-
-
-            if ((PreyCount + PreyCount + ObstaclesCount) > Size)
+            if ((PreyCount + PredatorsCount + ObstaclesCount) > Size)
             {
-                Console.WriteLine("Объекты не помещаются на заданном поле");
-                Environment.Exit(0);
+                int sum = PreyCount + PredatorsCount + ObstaclesCount;
+                throw new OceanException("Объекты не помещаются на заданном поле", (uint)sum);
             }
 
-            if (Size > MaxField)
-            {
-                Console.WriteLine("Поле слишком огромное. Вложитесь в 2000 клетки");
-                Environment.Exit(0);
-            }
 
             Ocean.Rows = (uint)Rows;
             Ocean.Columns = (uint)Columns;

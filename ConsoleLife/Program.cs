@@ -12,7 +12,7 @@ namespace Life
             Console.WriteLine("Введите тип игры\n1-Игра по умолчанию\n2-Игра с установкой своих параметров ");
             int switch_on;
             bool succees = Int32.TryParse(Console.ReadLine(), out switch_on);
-            if (!succees)
+            if (!succees || switch_on > 2)
             {
                 Console.WriteLine("Введите корректные данные");
             }
@@ -67,10 +67,10 @@ namespace Life
                             catch(OceanException ex)
                             {
                                 Console.WriteLine($"Error: {ex.Message}");
-                                Console.WriteLine($"Size of ocean outside the range: {ex.Value}");
+                                Console.WriteLine($"Size of ocean or objects outside the range: {ex.Value}");
                                 flag = true;
                             }
-                            
+
                         } while (flag == true);
 
                         break;
